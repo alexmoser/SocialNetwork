@@ -23,6 +23,13 @@ public class Person {
 		this.surname = s[1];
 		this.id = id;
 	}
+	
+	public Person(String name_surname) {
+		String[] s = name_surname.split(Parameters.NAME_SPLIT);
+		this.name = s[0];
+		this.surname = s[1];
+		this.id = -1;
+	}
 
 	public String getName() {
 		return name;

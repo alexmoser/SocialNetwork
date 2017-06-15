@@ -36,7 +36,6 @@ public class SoftwareChallenge {
             // check if already in list
             Integer p1ID = peopleMap.get(p1);
 //            int p1ID = people.indexOf(p1);
-//            if(p1ID == -1) {
             if(p1ID == null) {
             	peopleMap.put(p1, id);
             	people.add(p1);
@@ -79,10 +78,15 @@ public class SoftwareChallenge {
 	}
 	
 	/**
-	 * Performs a breadth-first search in the graph composed by the people in the specified ArrayList.
-	 * It starts from the node identified by source and finds the links that separates source from target.
+	 * Computes the minimum distance, as number of friends, that separates the two people specified.
+	 * It exploits graph theory, by searching the graph that represents the people connections according 
+	 * to the breadth-first algorithm. It starts from source and scans all its neighbour first, same for
+	 * the next iteration and so on.
+	 * @param Person source: is the first person
+	 * @param Person target: is the second person
+	 * @return the distance between source and target, in terms of friends.
 	 * */
-	public static int distance(ArrayList<Person> people, Person source, Person target) {
+	public static int distance(Person source, Person target) {
 		// queue containing not yet controlled people 
 		ArrayDeque<Person> toVisit = new ArrayDeque<>();
 		// set containing people analyzed
@@ -96,7 +100,6 @@ public class SoftwareChallenge {
 		while((cur = toVisit.poll()) != null) {
 			if(cur.equals(target)) {
 				// the target person has been found
-//				return cur;
 				break;
 			}
 			// for all the friends of the current person
@@ -139,12 +142,52 @@ public class SoftwareChallenge {
 		
         // get statistics
     	long totTime = System.nanoTime() - startTime;
-    	double minutes = totTime/6e10;
-        System.out.println("\n\nTOT TIME: " + totTime + " (" + minutes + " min)");
+    	// round to 2nd decimal
+    	double minutes = (double) Math.round(totTime/6e10 * 100d) / 100d;
+        System.out.println("\n\nTOT TIME: " + totTime + "ns (" + minutes + " min)");
         System.out.println("TOT LINES: " + lines);
         System.out.println("TOT PEOPLE: " + people.size());        
     	
-        printFriends();
-
+//        printFriends();
+        
+        // the database has been parsed, wait for user queries or exit command
+        System.out.println("Database created!\n");
+        while(true) {
+	        try{
+		        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		        System.out.println("\nInsert first person in the format NAME_SURNAME (or 'q' to exit)");
+		        String s = br.readLine();
+		        if(s.equals("q")) break;
+		        Person p1 = new Person(s);
+		        System.out.println("Insert second person in the format NAME_SURNAME (or 'q' to exit)");
+		        s = br.readLine();
+		        if(s.equals("q")) break;
+		        Person p2 = new Person(s);
+		
+		        // check if people exist in DB
+		        Integer p1ID = peopleMap.get(p1);
+		        if(p1ID == null) {
+		        	System.err.println("First person inserted does not exist inside the database!");
+		        	continue;
+		        }
+		        Integer p2ID = peopleMap.get(p2);
+		        if(p2ID == null) {
+		        	System.err.println("Second person inserted does not exist inside the database!");
+		        	continue;
+		        }
+		        
+		        int distance = distance(people.get(p1ID), people.get(p2ID));	
+		        if(distance == -1)
+		        	System.out.println("There is no way to connect the two people");
+		        else
+		        	System.out.println("Distance between the two people is: " + distance);
+		        
+	        }
+	        catch(IOException e) {
+	        	e.printStackTrace();
+	        }
+        }
+        
+        System.out.println("closing..");
     }
 }
