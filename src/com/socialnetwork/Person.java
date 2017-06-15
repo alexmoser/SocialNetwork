@@ -8,6 +8,9 @@ public class Person {
 	private final int id;
 	private ArrayList<Integer> friendsID = new ArrayList<>();
 	
+	// pointer attribute, used to compute distance
+	private Person previous;
+	
 	public Person(String name, String surname, int id) {
 		this.name = name;
 		this.surname = surname;
@@ -53,11 +56,23 @@ public class Person {
 		return friendsID;
 	}
 
+	public Person getPrevious() {
+		return previous;
+	}
+
+	public void setPrevious(Person previous) {
+		this.previous = previous;
+	}
+
+	public int getId() {
+		return id;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + id;
+//		result = prime * result + id;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((surname == null) ? 0 : surname.hashCode());
 		return result;
@@ -72,8 +87,8 @@ public class Person {
 		if (getClass() != obj.getClass())
 			return false;
 		Person other = (Person) obj;
-		if (id != other.id)
-			return false;
+//		if (id != other.id)
+//			return false;
 		if (name == null) {
 			if (other.name != null)
 				return false;
