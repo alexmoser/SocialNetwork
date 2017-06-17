@@ -78,15 +78,57 @@ public class SoftwareChallenge {
 	}
 	
 	/**
+	 * Computes the distance from the person specified as parameter and the root.
+	 * @param Person foundPerson: is the person, must have the "previous" field set in order to compute distance
+	 * @return the distance between the person and the root
+	 * */
+	public static int distance(Person foundPerson) {
+		if(foundPerson == null) 
+			// person hasn't been found
+			return -1;
+
+		// compute the distance between source and target
+		int distance = 0;
+        while(foundPerson.getPrevious() != null) {
+        	distance++;
+        	foundPerson = foundPerson.getPrevious();
+        }
+        return distance;
+	}
+	
+	/**
 	 * Computes the minimum distance, as number of friends, that separates the two people specified.
-	 * It exploits graph theory, by searching the graph that represents the people connections according 
-	 * to the breadth-first algorithm. It starts from source and scans all its neighbour first, same for
-	 * the next iteration and so on.
+	 * It exploits the breadth-first searching algorithm. 
 	 * @param Person source: is the first person
 	 * @param Person target: is the second person
 	 * @return the distance between source and target, in terms of friends.
 	 * */
 	public static int distance(Person source, Person target) {
+		Person last = bfSearch(source, target);
+		
+		if(last == null) 
+			// person hasn't been found
+			return -1;
+
+		// compute the distance between source and target
+		int distance = 0;
+        while(last.getPrevious() != null) {
+        	distance++;
+        	last = last.getPrevious();
+        }
+        return distance;
+	}	
+	
+	/**
+	 * It searches the specified target person, starting from the specified source person.
+	 * It exploits graph theory, by searching the graph that represents the people connections according 
+	 * to the breadth-first algorithm. It starts from source and scans all its neighbour first, same for
+	 * the next iteration and so on.
+	 * @param Person source: is the search starting point
+	 * @param Person target: is the target of the search
+	 * @return the target Person, with the field "previous" set, in order to find the path towards the source
+	 * */
+	public static Person bfSearch(Person source, Person target) {
 		// queue containing not yet controlled people 
 		ArrayDeque<Person> toVisit = new ArrayDeque<>();
 		// set containing people analyzed
@@ -100,7 +142,7 @@ public class SoftwareChallenge {
 		while((cur = toVisit.poll()) != null) {
 			if(cur.equals(target)) {
 				// the target person has been found
-				break;
+				return cur;
 			}
 			// for all the friends of the current person
 			for(Integer friendID : cur.getFriendsID()) {
@@ -113,19 +155,8 @@ public class SoftwareChallenge {
 				}
 			}
 		}
-		
-		if(cur == null) 
-			// person hasn't been found
-			return -1;
-
-		// compute the distance between source and target
-		int distance = 0;
-        while(cur.getPrevious() != null) {
-        	distance++;
-        	cur = cur.getPrevious();
-        }
-        return distance;
-	}	
+		return null;
+	}
 
 	public static void main(String[] args) {
 
@@ -175,12 +206,24 @@ public class SoftwareChallenge {
 		        	System.err.println("Second person inserted does not exist inside the database!");
 		        	continue;
 		        }
-		        
-		        int distance = distance(people.get(p1ID), people.get(p2ID));	
+
+		        Person p = bfSearch(people.get(p1ID), people.get(p2ID));
+//		        int distance = distance(people.get(p1ID), people.get(p2ID));
+		        int distance = distance(p);
 		        if(distance == -1)
 		        	System.out.println("There is no way to connect the two people");
-		        else
+		        else {
 		        	System.out.println("Distance between the two people is: " + distance);
+		        	System.out.println("Path followed: ");
+		        	int i = 0;
+		        	while(p.getPrevious() != null) {
+		        		System.out.println(i + ". " + p.toString());
+		        		i++;
+		        		p = p.getPrevious();
+		        	}
+	        		System.out.println(i + ". " + p.toString());
+		        }
+		       
 		        
 	        }
 	        catch(IOException e) {

@@ -2,3 +2,7 @@
 *.class
 
 *.class
+
+bin/com/socialnetwork/Person.class
+
+bin/com/socialnetwork/Person.class
