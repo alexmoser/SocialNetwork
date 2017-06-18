@@ -10,11 +10,24 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
+/**
+ * SoftwareChallenge class implements an application that parses the database file, creating a
+ * list of {@link Person}. It prints out the total number of people and waits for a user to enter
+ * two names. It then computes the distance between the two people.
+ * */
 public class SoftwareChallenge {
 	// list of all the people in the database
 	public static ArrayList<Person> people = new ArrayList<>();
 	public static HashMap<Person, Integer> peopleMap = new HashMap<>();
 	
+	/**
+	 * Parses the database specified into the ArrayList people. To quickly check if a person is 
+	 * already in the list, it uses the HashMap peopleMap. The names in the DB must follow the format:
+	 * NAME1&lt;NAME_SPLIT&gt;SURNAME1&lt;PERSON_SPLIT&gt;NAME2&lt;NAME_SPLIT&gt;SURNAME2
+	 * @param db_path is the path where the database file is found
+	 * @return the total number of lines parsed aka the lines in the database
+	 * @throws IOException
+	 * */
 	public static int parseDB(String db_path) throws IOException {
     	int totLines = 0;
     	
@@ -66,6 +79,9 @@ public class SoftwareChallenge {
         return totLines;
 	}
 	
+	/**
+	 * Prints on the console the friends of each person.
+	 * */
 	public static void printFriends() {
 		for(Person p1 : people) {
 			System.out.println(p1.toString());
@@ -79,7 +95,7 @@ public class SoftwareChallenge {
 	
 	/**
 	 * Computes the distance from the person specified as parameter and the root.
-	 * @param Person foundPerson: is the person, must have the "previous" field set in order to compute distance
+	 * @param foundPerson is the person, must have the "previous" field set in order to compute distance
 	 * @return the distance between the person and the root
 	 * */
 	public static int distance(Person foundPerson) {
@@ -99,8 +115,8 @@ public class SoftwareChallenge {
 	/**
 	 * Computes the minimum distance, as number of friends, that separates the two people specified.
 	 * It exploits the breadth-first searching algorithm. 
-	 * @param Person source: is the first person
-	 * @param Person target: is the second person
+	 * @param source is the first person
+	 * @param target is the second person
 	 * @return the distance between source and target, in terms of friends.
 	 * */
 	public static int distance(Person source, Person target) {
@@ -124,8 +140,8 @@ public class SoftwareChallenge {
 	 * It exploits graph theory, by searching the graph that represents the people connections according 
 	 * to the breadth-first algorithm. It starts from source and scans all its neighbour first, same for
 	 * the next iteration and so on.
-	 * @param Person source: is the search starting point
-	 * @param Person target: is the target of the search
+	 * @param source is the search starting point
+	 * @param target is the target of the search
 	 * @return the target Person, with the field "previous" set, in order to find the path towards the source
 	 * */
 	public static Person bfSearch(Person source, Person target) {
@@ -170,19 +186,20 @@ public class SoftwareChallenge {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
+        System.out.println("Database parsed!\n");
+        
         // get statistics
     	long totTime = System.nanoTime() - startTime;
     	// round to 2nd decimal
     	double minutes = (double) Math.round(totTime/6e10 * 100d) / 100d;
-        System.out.println("\n\nTOT TIME: " + totTime + "ns (" + minutes + " min)");
+        System.out.println("TOT TIME: " + totTime + "ns (" + minutes + " min)");
         System.out.println("TOT LINES: " + lines);
         System.out.println("TOT PEOPLE: " + people.size());        
     	
 //        printFriends();
         
         // the database has been parsed, wait for user queries or exit command
-        System.out.println("Database created!\n");
         while(true) {
 	        try{
 		        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));

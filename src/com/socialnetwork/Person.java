@@ -2,6 +2,10 @@ package com.socialnetwork;
 
 import java.util.ArrayList;
 
+/**
+ * Person class represents a person of the database. It has a name, surname, unique id
+ * and a list of friends, identified by their ID.
+ * */
 public class Person {
 	private String name;
 	private String surname;
